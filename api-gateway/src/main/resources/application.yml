@@ -1,0 +1,99 @@
+server:
+  port: 8083
+
+#暴露executor监控端点到8023端口
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  server:
+    port: 8023
+
+spring:
+  application:
+    name: api-gateway
+    #freemarker配置
+  freemarker:
+      charset: UTF-8
+      content-type: text/html;charset=UTF-8
+      expose-request-attributes: true
+      expose-session-attributes: true
+      expose-spring-macro-helpers: true
+      suffix: .ftl
+      settings:
+        datetime_format: yyyy-MM-dd HH:mm:ss
+        default_encoding: UTF-8
+        #将common.ftl识别为一个宏文件
+        auto_import: common/common.ftl as common
+  #zipkin服务器地址
+  zipkin:
+    base-url: http://localhost:9411
+  sleuth:
+    sampler:
+      rate: 1
+
+#eureka配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8666/eureka/
+    #网关不用注册到注册中心
+    register-with-eureka: false
+
+#hystrix断路器配置
+hystrix:
+  command:
+    default:
+       execution:
+          isolation:
+             thread:
+                timeoutInMilliseconds: 2000
+       circuitBreaker:
+         errorThresholdPercentage: 10
+         sleepWindowInMilliseconds: 10000
+  threadpool:
+     default:
+       coreSize: 5
+       maximumSize: 10
+       maxQueueSize: 1
+       #使线程池配置生效
+       allowMaximumSizeToDivergeFromCoreSize: true
+
+ribbon:
+  eureka:
+    enabled: false
+
+#配置ribbon负载均衡服务器列表
+user:
+  ribbon:   #本地调试只有一个实例，如果有多实例，可参考配置  localhost:8086，localhost:8087，localhost:8088
+    listOfServers: localhost:8086
+#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.AvailabilityFilteringRule
+  service:
+      name: user
+#部分常量配置
+house:
+  ribbon:
+    listOfServers: localhost:8088
+  service:
+    name: house
+comment:
+  ribbon:
+    listOfServers: localhost:8090
+  service:
+    name: comment
+file:
+  path: /home/house/data/images
+  prefix: http://127.0.0.1:8081/images
+domain:
+  name: 127.0.0.1:8083
+
+#logbook配置
+logbook:
+  write:
+    level: info
+  format:
+    style: http
+
+
+

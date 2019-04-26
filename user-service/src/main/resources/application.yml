@@ -1,0 +1,80 @@
+server:
+  port: 8086
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  server:
+    port: 8045
+
+mybatis:
+  config-location: classpath:/mybatis/mybatis-config.xml
+
+spring:
+  application:
+    name: user
+  #springboot邮箱服务
+  mail:
+    host: smtp.163.com
+    username: spring_boot@163.com
+    password: abc123455
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: false
+  #zipkin服务地址
+  zipkin:
+      base-url: http://localhost:9411
+  sleuth:
+      sampler:
+          rate: 1
+  #druid连接池配置
+  druid:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/user?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+    #最大活跃连接数
+    maxActive: 30
+    #最小连接数
+    minIdle: 5
+    #获取连接最大等待时间
+    maxWait: 10000
+    #解决mysql 8h的问题  （验证mysql连接是否正常）
+    validationQuery: SELECT 'x'
+    #空闲连接检查时间间隔
+    timeBetweenEvictionRunsMillis: 60000
+    #空闲连接最小空闲时间
+    minEvictableIdleTimeMillis: 300000
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8666/eureka/
+    #开启健康检测
+    healthcheck:
+      enabled: true
+  instance:
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 10
+
+#logbook相关配置
+logbook:
+  write:
+    level: info
+  format:
+    style: http
+
+#文件上传配置
+file:
+  path:  /home/house/data/images
+  prefix: http://127.0.0.1:8081/images

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="debug">
+    <appenders>
+        <Console name="STDOUT">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <Threshold level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!--输出日志格式-->
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} [%X{X-B3-TraceId},%X{X-B3-SpanId}] - %msg%n" charset="UTF-8"/>
+        </Console>
+
+        <RollingRandomAccessFile name="FILE-INFO" fileName="logs/gateway-info.log"
+        filePattern="logs/gateway-info.%d{yyyy-MM-dd-HH}.log">
+            <Threshold level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} [%X{X-B3-TraceId},%X{X-B3-SpanId}] - %msg%n" charset="UTF-8"/>
+            <TimeBasedTriggeringPolicy interval="4" modulate="true"/>
+            <DefaultRolloverStrategy max="1">
+                <Deletc basePath="logs" maxDepth="2">
+                    <!--通配符匹配日志文件-->
+                    <IfFileName glob="*gateway-info.*.log"/>
+                    <!--保留一个小时-->
+                    <IfLastModified age="1h"/>
+                </Deletc>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="FILE-DEBUG" fileName="logs/gateway-debug.log"
+                                 filePattern="logs/gateway-debug.%d{yyyy-MM-dd-HH}.log">
+            <Threshold level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} [%X{X-B3-TraceId},%X{X-B3-SpanId}] - %msg%n" charset="UTF-8"/>
+            <TimeBasedTriggeringPolicy interval="1"/>
+            <DefaultRolloverStrategy max="1">
+                <Deletc basePath="logs" maxDepth="2">
+                    <IfFileName glob="*gateway-debug.*.log"/>
+                    <IfLastModified age="1h"/>
+                </Deletc>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="FILE-ERROR" fileName="logs/gateway-error.log"
+                                 filePattern="logs/gateway-error.%d{yyyy-MM-dd-HH}.log">
+            <Threshold level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} [%X{X-B3-TraceId},%X{X-B3-SpanId}] - %msg%n" charset="UTF-8"/>
+            <TimeBasedTriggeringPolicy interval="1"/>
+            <DefaultRolloverStrategy max="1">
+                <Deletc basePath="logs" maxDepth="2">
+                    <IfFileName glob="*gateway-error.*.log"/>
+                    <IfLastModified age="1h"/>
+                </Deletc>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+    </appenders>
+
+
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->
+    <loggers>
+        <AsyncLogger name="springfox" level="OFF"></AsyncLogger>
+        <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
+        <AsyncLogger name="org.springframework" level="INFO"></AsyncLogger>
+        <AsyncLogger name="org.mybatis" level="INFO"></AsyncLogger>
+        <!--AsyncRoot -异步记录日志 -需要LMAX Disruptor的支持-->
+        <AsyncRoot level="INFO" includeLocation="true">
+            <AppenderRef ref="FILE-INFO"/>
+            <AppenderRef ref="FILE-DEBUG"/>
+            <AppenderRef ref="FILE-ERROR"/>
+            <AppenderRef ref="STDOUT"/>
+        </AsyncRoot>
+    </loggers>
+</configuration>

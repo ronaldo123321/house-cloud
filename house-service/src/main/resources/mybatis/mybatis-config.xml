@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!--配置关闭缓存-->
+        <setting name="cacheEnabled" value="false"/>
+        <!--开启驼峰式命名-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="useGeneratedKeys" value="true"/>
+        <!--缓存prepareStatement-->
+        <setting name="defaultExecutorType" value="REUSE"/>
+        <!--配置事务的超时时间-->
+        <setting name="defaultStatementTimeout" value="600"/>
+    </settings>
+
+    <typeAliases>
+
+        <typeAlias type="com.anytec.houseservice.model.House"       alias="house"/>
+        <typeAlias type="com.anytec.houseservice.model.City"        alias="city"/>
+        <typeAlias type="com.anytec.houseservice.model.Community"   alias="community"/>
+        <typeAlias type="com.anytec.houseservice.model.HouseUser"   alias="houseUser"/>
+        <typeAlias type="com.anytec.houseservice.model.User"        alias="user"/>
+        <typeAlias type="com.anytec.houseservice.model.UserMsg"     alias="userMsg"/>
+        <typeAlias type="com.anytec.houseservice.model.HouseUser"     alias="houseUser"/>
+    </typeAliases>
+
+    <mappers>
+        <mapper resource="mapper/house.xml"/>
+    </mappers>
+</configuration>

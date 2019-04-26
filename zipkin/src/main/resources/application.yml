@@ -1,0 +1,6 @@
+#注意：zipkin服务暂时有问题，待后续解决
+spring:
+  application:
+    name: zipkin
+server:
+  port: 9411
